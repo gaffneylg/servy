@@ -3,7 +3,9 @@ defmodule Servy.Handler do
   def handle(request) do
     request
     |> parse()
+    |> rewrite_path()
     |> route()
+    |> track()
     |> format_response()
   end
 
@@ -16,27 +18,35 @@ defmodule Servy.Handler do
     %{method: method, path: path, resp_body: "", status: nil}
   end
 
-  def route(conv) do
-    route(conv, conv.method, conv.path)
+  def rewrite_path(%{path: "/wildlife"} = conv) do
+    %{ conv | path: "/wildthings" }
   end
 
+  def rewrite_path(conv), do: conv
 
-  def route(conv, "GET", "/wildthings") do
+  def route(%{method: "GET", path: "/wildthings"} = conv) do
     %{ conv | resp_body: "Bears, Lions, Tigers", status: 200}
   end
 
-  def route(conv, "GET", "/bears") do
+  def route(%{method: "GET", path: "/bears"} = conv) do
     %{ conv | resp_body: "Teddy, Paddington, Yogi", status: 200}
   end
 
-  def route(conv, "GET", "/bears/" <> id) do
+  def route(%{method: "GET", path: "/bears/" <> id} = conv) do
     %{ conv | resp_body: "Bear #{id}", status: 200}
   end
 
-  def route(conv, method, path) do
-    IO.inspect("No function clause matching method type #{method} with path #{path}.")
+  def route(%{path: path} = conv) do
+    IO.inspect("No function clause matching with path #{path}.")
     %{ conv | resp_body: "#{path} is an invalid path.", status: 404}
   end
+
+  def track(%{status: 404, path: path} = conv) do
+    IO.puts("Warning: #{path} is missing.")
+    conv
+  end
+
+  def track(conv), do: conv
 
   def format_response(conv) do
     """
@@ -63,7 +73,7 @@ defmodule Servy.Handler do
 end
 
 
-wild_request = """
+wildthing_request = """
 GET /wildthings HTTP/1.1
 Host: example.com
 User-Agent: ExampleBrowser/1.0
@@ -71,8 +81,19 @@ Accept: */*
 
 """
 
-wild_response = Servy.Handler.handle(wild_request)
-IO.puts wild_response
+wildthing_response = Servy.Handler.handle(wildthing_request)
+IO.puts wildthing_response
+
+wildlife_request = """
+GET /wildthings HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+wildlife_response = Servy.Handler.handle(wildlife_request)
+IO.puts wildlife_response
 
 bears_req = """
 GET /bears HTTP/1.1
