@@ -28,8 +28,32 @@ defmodule Servy.Handler do
     %{ conv | resp_body: "Bears, Lions, Tigers", status: 200}
   end
 
+  def route(%{method: "GET", path: "/about"} = conv) do
+    pages_path = Path.expand("pages/about.html")
+    case File.read(pages_path) do
+      {:ok, file_contents} ->
+        %{ conv | resp_body: file_contents, status: 200}
+      {:error, :enoent} ->
+        %{ conv | resp_body: "File does not exist.", status: 404}
+      {:error, reason} ->
+        %{ conv | resp_body: reason, status: 404}
+    end
+  end
+
   def route(%{method: "GET", path: "/bears"} = conv) do
     %{ conv | resp_body: "Teddy, Paddington, Yogi", status: 200}
+  end
+
+  def route(%{method: "GET", path: "/bears/new"} = conv) do
+    pages_path = Path.expand("pages/form.html")
+    case File.read(pages_path) do
+      {:ok, file_contents} ->
+        %{ conv | resp_body: file_contents, status: 200}
+      {:error, :enoent} ->
+        %{ conv | resp_body: "File does not exist.", status: 404}
+      {:error, reason} ->
+        %{ conv | resp_body: reason, status: 404}
+    end
   end
 
   def route(%{method: "GET", path: "/bears/" <> id} = conv) do
@@ -117,6 +141,16 @@ Accept: */*
 bears1_response = Servy.Handler.handle(bears1_req)
 IO.puts bears1_response
 
+bears_new_req = """
+GET /bears/new HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+bears_new_response = Servy.Handler.handle(bears_new_req)
+IO.puts bears_new_response
 
 bigfoot_req = """
 GET /bigfoot HTTP/1.1
@@ -128,3 +162,14 @@ Accept: */*
 
 bigfoot_response = Servy.Handler.handle(bigfoot_req)
 IO.puts bigfoot_response
+
+about_req = """
+GET /about HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+about_response = Servy.Handler.handle(about_req)
+IO.puts about_response
