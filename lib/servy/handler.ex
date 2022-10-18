@@ -48,6 +48,12 @@ defmodule Servy.Handler do
     %{ conv | resp_body: "Bear #{id}", status: 200}
   end
 
+
+  def route(%Conv{method: "POST", path: "/bears"} = conv) do
+    %{ conv | status: 201,
+    resp_body: "Created a bear, #{conv.params["name"]} is a #{conv.params["type"]} bear!" }
+  end
+
   def route(%Conv{path: path} = conv) do
     IO.inspect("No function clause matching with path #{path}.")
     %{ conv | resp_body: "#{path} is an invalid path.", status: 404}
@@ -64,6 +70,19 @@ defmodule Servy.Handler do
   end
 end
 
+post_request = """
+POST /bears HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 21
+
+name=Baloo&type=Brown
+"""
+
+Servy.Handler.handle(post_request)
+|> IO.puts
 
 wildthing_request = """
 GET /wildthings HTTP/1.1
@@ -73,8 +92,8 @@ Accept: */*
 
 """
 
-wildthing_response = Servy.Handler.handle(wildthing_request)
-IO.puts wildthing_response
+Servy.Handler.handle(wildthing_request)
+|> IO.puts
 
 wildlife_request = """
 GET /wildthings HTTP/1.1
@@ -84,8 +103,8 @@ Accept: */*
 
 """
 
-wildlife_response = Servy.Handler.handle(wildlife_request)
-IO.puts wildlife_response
+Servy.Handler.handle(wildlife_request)
+|> IO.puts
 
 bears_req = """
 GET /bears HTTP/1.1
@@ -95,8 +114,8 @@ Accept: */*
 
 """
 
-bears_response = Servy.Handler.handle(bears_req)
-IO.puts bears_response
+Servy.Handler.handle(bears_req)
+|> IO.puts
 
 bears1_req = """
 GET /bears/11 HTTP/1.1
@@ -106,8 +125,8 @@ Accept: */*
 
 """
 
-bears1_response = Servy.Handler.handle(bears1_req)
-IO.puts bears1_response
+Servy.Handler.handle(bears1_req)
+|> IO.puts
 
 bears_new_req = """
 GET /bears/new HTTP/1.1
@@ -117,8 +136,8 @@ Accept: */*
 
 """
 
-bears_new_response = Servy.Handler.handle(bears_new_req)
-IO.puts bears_new_response
+Servy.Handler.handle(bears_new_req)
+|> IO.puts
 
 bigfoot_req = """
 GET /bigfoot HTTP/1.1
@@ -128,8 +147,8 @@ Accept: */*
 
 """
 
-bigfoot_response = Servy.Handler.handle(bigfoot_req)
-IO.puts bigfoot_response
+Servy.Handler.handle(bigfoot_req)
+|> IO.puts
 
 about_req = """
 GET /about HTTP/1.1
@@ -139,5 +158,5 @@ Accept: */*
 
 """
 
-about_response = Servy.Handler.handle(about_req)
-IO.puts about_response
+Servy.Handler.handle(about_req)
+|> IO.puts
