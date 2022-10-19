@@ -31,7 +31,11 @@ defmodule Servy.BearController do
       resp_body: "Created a bear, #{name} is a #{type} bear!" }
   end
 
-
+  def delete(conv, _params) do
+    # Below was written before checking the answer, turns out we don't wanna delete.
+    # %{ conv | status: 201, resp_body: "Deleted bear with id: #{id}!" }
+    %{ conv | status: 403, resp_body: "Deleting a bear is forbidden!"}
+  end
 
   def transform_bear_list(bears) do
     Enum.map(bears,
@@ -39,8 +43,4 @@ defmodule Servy.BearController do
         "<li>#{bear.name} - #{bear.type}</li>"
       end)
   end
-
-  # defp bear_item(bear) do
-
-  # end
 end

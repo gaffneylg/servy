@@ -21,4 +21,15 @@ defmodule Servy.Wildthings do
     when is_binary(id) do
       id |> String.to_integer() |> get_bear()
   end
+
+  # Not being used yet but written in case it's wanted later
+  # def delete_bear(id)
+  #   when is_integer(id) do
+  #   List.delete(list_bears(), get_bear(id))
+  # end
+
+  # def delete_bear(id)
+  #   when is_binary(id) do
+  #     id |> String.to_integer() |> delete_bear()
+  # end
 end

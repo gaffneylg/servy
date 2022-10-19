@@ -35,6 +35,12 @@ defmodule Servy.Handler do
     |> FileHandler.read_file(conv)
   end
 
+  def route(%Conv{method: "GET", path: "/pages/" <> page} = conv) do
+    @pages_path
+    |> Path.join("#{page}.html")
+    |> FileHandler.read_file(conv)
+  end
+
   def route(%Conv{method: "GET", path: "/bears"} = conv) do
     BearController.index(conv)
   end
@@ -50,6 +56,11 @@ defmodule Servy.Handler do
 
   def route(%Conv{method: "POST", path: "/bears"} = conv) do
     BearController.create(conv, conv.params)
+  end
+
+  def route(%Conv{method: "DELETE", path: "/bears/" <> id} = conv) do
+    params = Map.put(conv.params, "id", id)
+    BearController.delete(conv, params)
   end
 
   def route(%Conv{path: path} = conv) do
@@ -137,6 +148,17 @@ Accept: */*
 Servy.Handler.handle(bears_new_req)
 |> IO.puts
 
+delete_request = """
+DELETE /bears/1 HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+Servy.Handler.handle(delete_request)
+|> IO.puts
+
 bigfoot_req = """
 GET /bigfoot HTTP/1.1
 Host: example.com
@@ -157,4 +179,15 @@ Accept: */*
 """
 
 Servy.Handler.handle(about_req)
+|> IO.puts
+
+faq_req = """
+GET /pages/faq HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+Servy.Handler.handle(faq_req)
 |> IO.puts
