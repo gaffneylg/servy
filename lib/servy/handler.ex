@@ -127,7 +127,7 @@ Servy.Handler.handle(bears_req)
 |> IO.puts
 
 bears1_req = """
-GET /bears/11 HTTP/1.1
+GET /bears/6 HTTP/1.1
 Host: example.com
 User-Agent: ExampleBrowser/1.0
 Accept: */*
