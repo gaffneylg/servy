@@ -5,6 +5,7 @@ defmodule Servy do
 
   def hello(name) do
     "Hello, #{name}!"
+    :world
   end
 end
 

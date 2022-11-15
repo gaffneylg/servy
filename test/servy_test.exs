@@ -3,6 +3,10 @@ defmodule ServyTest do
   doctest Servy
 
   test "greets the world" do
-    assert Servy.hello() == :world
+    assert Servy.hello("Mike") == :world
+  end
+
+  test "the truth" do
+    assert 1 + 1 == 2
   end
 end

@@ -20,10 +20,19 @@ defmodule Servy.Plugins do
     Will log out any incorrect paths that a request is sent for.
     """
     def track(%Conv{status: 404, path: path} = conv) do
-      IO.puts("Warning: #{path} is missing.")
+      if Mix.env != :test do
+        IO.puts("Warning: #{path} is missing.")
+      end
       conv
     end
 
     def track(conv), do: conv
+
+    def log(%Conv{} = conv) do
+      if Mix.env == :dev do
+        IO.inspect(conv)
+      end
+      conv
+    end
 
 end

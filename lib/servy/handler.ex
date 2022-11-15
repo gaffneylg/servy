@@ -70,124 +70,130 @@ defmodule Servy.Handler do
 
   def format_response(%Conv{} = conv) do
     """
-    HTTP/1.1 #{Conv.full_status(conv)}
-    Content-Type: text/html
-    Content-Length: #{String.length(conv.resp_body)}
-
+    HTTP/1.1 #{Conv.full_status(conv)}\r
+    Content-Type: text/html\r
+    Content-Length: #{String.length(conv.resp_body)}\r
+    \r
     #{conv.resp_body}
     """
   end
 end
 
-post_request = """
-POST /bears HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 21
 
-name=Baloo&type=Brown
-"""
+# ==============================================================================
+# Requests below are now in the form of tests, if wanted to run below in iex,
+# will need to edit and make compatible with \r\n in newer code.
+# ==============================================================================
 
-Servy.Handler.handle(post_request)
-|> IO.puts
+# post_request = """
+# POST /bears HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
+# Content-Type: application/x-www-form-urlencoded
+# Content-Length: 21
 
-wildthing_request = """
-GET /wildthings HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
+# name=Baloo&type=Brown
+# """
 
-"""
+# Servy.Handler.handle(post_request)
+# |> IO.puts
 
-Servy.Handler.handle(wildthing_request)
-|> IO.puts
+# wildthing_request = """
+# GET /wildthings HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
 
-wildlife_request = """
-GET /wildthings HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
+# """
 
-"""
+# Servy.Handler.handle(wildthing_request)
+# |> IO.puts
 
-Servy.Handler.handle(wildlife_request)
-|> IO.puts
+# wildlife_request = """
+# GET /wildthings HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
 
-bears_req = """
-GET /bears HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
+# """
 
-"""
+# Servy.Handler.handle(wildlife_request)
+# |> IO.puts
 
-Servy.Handler.handle(bears_req)
-|> IO.puts
+# bears_req = """
+# GET /bears HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
 
-bears1_req = """
-GET /bears/6 HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
+# """
 
-"""
+# Servy.Handler.handle(bears_req)
+# |> IO.puts
 
-Servy.Handler.handle(bears1_req)
-|> IO.puts
+# bears1_req = """
+# GET /bears/6 HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
 
-bears_new_req = """
-GET /bears/new HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
+# """
 
-"""
+# Servy.Handler.handle(bears1_req)
+# |> IO.puts
 
-Servy.Handler.handle(bears_new_req)
-|> IO.puts
+# bears_new_req = """
+# GET /bears/new HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
 
-delete_request = """
-DELETE /bears/1 HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
+# """
 
-"""
+# Servy.Handler.handle(bears_new_req)
+# |> IO.puts
 
-Servy.Handler.handle(delete_request)
-|> IO.puts
+# delete_request = """
+# DELETE /bears/1 HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
 
-bigfoot_req = """
-GET /bigfoot HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
+# """
 
-"""
+# Servy.Handler.handle(delete_request)
+# |> IO.puts
 
-Servy.Handler.handle(bigfoot_req)
-|> IO.puts
+# bigfoot_req = """
+# GET /bigfoot HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
 
-about_req = """
-GET /about HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
+# """
 
-"""
+# Servy.Handler.handle(bigfoot_req)
+# |> IO.puts
 
-Servy.Handler.handle(about_req)
-|> IO.puts
+# about_req = """
+# GET /about HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
 
-faq_req = """
-GET /pages/faq HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
+# """
 
-"""
+# Servy.Handler.handle(about_req)
+# |> IO.puts
 
-Servy.Handler.handle(faq_req)
-|> IO.puts
+# faq_req = """
+# GET /pages/faq HTTP/1.1
+# Host: example.com
+# User-Agent: ExampleBrowser/1.0
+# Accept: */*
+
+# """
+
+# Servy.Handler.handle(faq_req)
+# |> IO.puts
