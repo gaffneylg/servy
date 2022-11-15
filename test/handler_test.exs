@@ -37,7 +37,7 @@ defmodule HandlerTest do
     expected_response = """
     HTTP/1.1 200 OK\r
     Content-Type: text/html\r
-    Content-Length: 229\r
+    Content-Length: 230\r
     \r
     <h1>All The Bears!</h1>
 
@@ -168,6 +168,29 @@ defmodule HandlerTest do
     Content-Length: 38\r
     \r
     Created a bear, Baloo is a Brown bear!
+    """
+  end
+
+  test "DELETE /bears/6" do
+    request = """
+    DELETE /bears/6 HTTP/1.1\r
+    Host: example.com\r
+    User-Agent: ExampleBrowser/1.0\r
+    Accept: */*\r
+    Content-Type: application/x-www-form-urlencoded\r
+    Content-Length: 21\r
+    \r
+    name=Baloo&type=Brown
+    """
+
+    response = handle(request)
+
+    assert response == """
+    HTTP/1.1 403 Forbidden\r
+    Content-Type: text/html\r
+    Content-Length: 29\r
+    \r
+    Deleting a bear is forbidden!
     """
   end
 
