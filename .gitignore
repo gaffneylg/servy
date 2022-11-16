@@ -24,3 +24,7 @@ servy-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Ignoring currently unused .eex files, will most likeyly be deleted soon
+templates/index.eex
+templates/show.eex
