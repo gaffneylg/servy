@@ -41,6 +41,10 @@ defmodule Servy.Handler do
     |> FileHandler.read_file(conv)
   end
 
+  def route(%Conv{method: "GET", path: "/api/bears"} = conv) do
+    Servy.Api.BearController.index(conv)
+  end
+
   def route(%Conv{method: "GET", path: "/bears"} = conv) do
     BearController.index(conv)
   end
@@ -64,14 +68,14 @@ defmodule Servy.Handler do
   end
 
   def route(%Conv{path: path} = conv) do
-    IO.inspect("No function clause matching with path #{path}.")
+    # IO.inspect("No function clause matching with path #{path}.")
     %{ conv | resp_body: "#{path} is an invalid path.", status: 404}
   end
 
   def format_response(%Conv{} = conv) do
     """
     HTTP/1.1 #{Conv.full_status(conv)}\r
-    Content-Type: text/html\r
+    Content-Type: #{conv.resp_content_type}\r
     Content-Length: #{String.length(conv.resp_body)}\r
     \r
     #{conv.resp_body}
