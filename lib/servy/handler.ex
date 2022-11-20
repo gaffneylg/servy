@@ -19,12 +19,12 @@ defmodule Servy.Handler do
   """
   def handle(request) do
     request
-    |> parse()
-    |> rewrite_path()
-    |> route()
-    |> track()
-    |> put_content_length()
-    |> format_response()
+    |> parse
+    |> rewrite_path
+    |> route
+    |> track
+    |> put_content_length
+    |> format_response
   end
 
   def route(%Conv{method: "GET", path: "/wildthings"} = conv) do
@@ -67,6 +67,10 @@ defmodule Servy.Handler do
   def route(%Conv{method: "DELETE", path: "/bears/" <> id} = conv) do
     params = Map.put(conv.params, "id", id)
     BearController.delete(conv, params)
+  end
+
+  def route(%Conv{method: "POST", path: "/api/bears"} = conv) do
+    Servy.Api.BearController.create(conv)
   end
 
   def route(%Conv{path: path} = conv) do

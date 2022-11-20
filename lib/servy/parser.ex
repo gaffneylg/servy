@@ -42,6 +42,10 @@ defmodule Servy.Parser do
       |> URI.decode_query()
   end
 
+  def parse_params("application/json", param_string) do
+    Poison.Parser.parse!(param_string)
+  end
+
   def parse_params(_content_type, _param_string), do: %{}
 
   def parse_headers([head | tail], headers) do

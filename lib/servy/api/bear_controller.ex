@@ -11,6 +11,12 @@ defmodule Servy.Api.BearController do
     %{conv | status: 200, resp_body: json}
   end
 
+  def create(conv) do
+    resp_body = "Created a #{conv.params["type"]} bear named #{conv.params["name"]}!"
+    conv = put_content_length(conv)
+    %{conv | status: 201, resp_body: resp_body}
+  end
+
   def format_response_headers(conv) do
     Enum.map(conv.resp_headers,
       fn {key, value} ->
