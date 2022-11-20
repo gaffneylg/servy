@@ -11,6 +11,16 @@ defmodule Servy.Api.BearController do
     %{conv | status: 200, resp_body: json}
   end
 
+  def format_response_headers(conv) do
+    Enum.map(conv.resp_headers,
+      fn {key, value} ->
+        "#{key}: #{value}\r"
+      end)
+      |> Enum.sort
+      |> Enum.reverse
+      |> Enum.join("\n")
+  end
+
   def put_content_length(conv) do
     new_headers = Map.put(conv.resp_headers, "Content-Length", String.length(conv.resp_body))
     %{conv | resp_headers: new_headers}
