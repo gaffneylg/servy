@@ -18,7 +18,8 @@ defmodule Servy.HttpServer do
     IO.puts("Waiting to accept client connection.\n")
     {:ok, client_sock} = :gen_tcp.accept(listen_sock)
     IO.puts("Connection accepted.\n")
-    spawn(__MODULE__, :serve, [client_sock])
+    pid = spawn(__MODULE__, :serve, [client_sock])
+    :ok = :gen_tcp.controlling_process(client_sock, pid)
     accept_loop(listen_sock)
   end
 
