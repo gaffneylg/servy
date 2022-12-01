@@ -3,6 +3,7 @@ defmodule Servy.Handler do
   alias Servy.BearController
   alias Servy.Conv
   alias Servy.FileHandler
+  alias Servy.VideoCam
   import Servy.Api.BearController
   import Servy.Parser
   import Servy.Plugins, only: :functions
@@ -29,6 +30,21 @@ defmodule Servy.Handler do
 
   def route(%Conv{method: "GET", path: "/kaboom"} = _conv) do
     raise "Kaboom!"
+  end
+
+  def route(%Conv{method: "GET", path: "/snapshots"} = conv) do
+    parent = self()
+    spawn(fn -> send(parent, {:result, VideoCam.get_snapshot("cam-1")}) end)
+    spawn(fn -> send(parent, {:result, VideoCam.get_snapshot("cam-2")}) end)
+    spawn(fn -> send(parent, {:result, VideoCam.get_snapshot("cam-3")}) end)
+
+    snap1 = receive do {:result, snap} -> snap end
+    snap2 = receive do {:result, snap} -> snap end
+    snap3 = receive do {:result, snap} -> snap end
+
+    snapshots = [snap1, snap2, snap3]
+
+    %{ conv | status: 200, resp_body: inspect snapshots }
   end
 
   def route(%Conv{method: "GET", path: "/hibernate/" <> time} = conv) do
