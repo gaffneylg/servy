@@ -4,6 +4,8 @@ defmodule Servy.BearController do
   alias Servy.FileHandler
   alias Servy.Wildthings
 
+  import Servy.View, only: [render: 3]
+
   @pages_path Path.expand("pages", File.cwd!)
   @templates_path Path.expand("templates", File.cwd!)
 
@@ -12,13 +14,13 @@ defmodule Servy.BearController do
       Wildthings.list_bears()
       |> Bear.sort_bears_alphabetically()
 
-    render(conv, "index", bears: bears)
+    render(conv, "index.html.heex", bears: bears)
   end
 
   def show(conv, %{"id" => id}) do
     bear = Wildthings.get_bear(id)
 
-    render(conv, "show", bear: bear)
+    render(conv, "show.html.heex", bear: bear)
   end
 
   def new(conv) do
@@ -43,13 +45,5 @@ defmodule Servy.BearController do
       fn(bear) ->
         "<li>#{bear.name} - #{bear.type}</li>"
       end)
-  end
-
-  defp render(conv, template, bindings \\ []) do
-    content = @templates_path
-      |> Path.join("#{template}.html.heex")
-      |> EEx.eval_file(bindings)
-
-    %{ conv | resp_body: content, status: 200}
   end
 end

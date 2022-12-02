@@ -5,20 +5,18 @@ defmodule HttpServerTest do
 
   test "accepts a request via a socket and sends a response back" do
     spawn(HttpServer, :start, [4000])
-
-    url = "http://localhost:4000/wildthings"
-    {:ok, response} = HTTPoison.get(url)
-
     parent = self()
-    for n <- Enum.to_list(1..5) do
-      spawn(fn -> send(parent, {:result, HTTPoison.get(url)}) end)
-    end
 
-    for n <- Enum.to_list(1..5) do
-      resp = recv()
+    url1 = "http://localhost:4000/wildthings"
+    url2 = "http://localhost:4000/bears"
+    urls = [url1, url2]
+
+    for url <- urls do
+      {:ok, resp} =
+        Task.async(fn -> HTTPoison.get(url) end)
+        |> Task.await()
       confirm_response(resp)
     end
-
   end
 
   defp recv() do
@@ -27,6 +25,5 @@ defmodule HttpServerTest do
 
   defp confirm_response(resp) do
     assert resp.status_code == 200
-    assert resp.body == "Bears, Lions, Tigers"
   end
 end

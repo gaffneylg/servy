@@ -7,6 +7,7 @@ defmodule Servy.Handler do
   import Servy.Api.BearController
   import Servy.Parser
   import Servy.Plugins, only: :functions
+  import Servy.View, only: [render: 3]
 
   @pages_path Path.expand("pages", File.cwd!)
 
@@ -41,8 +42,9 @@ defmodule Servy.Handler do
       |> Enum.map(&Task.await/1)
 
     bigfoot = Task.await(task)
+    bigfoot_location = "Lat: " <> bigfoot.lat <> ", Lng: " <> bigfoot.lng <> "."
 
-    %{ conv | status: 200, resp_body: inspect {snaps, bigfoot} }
+    render(conv, "sensors.html.heex", [snapshots: snaps, bigfoot: bigfoot_location ] )
   end
 
   def route(%Conv{method: "GET", path: "/hibernate/" <> time} = conv) do
