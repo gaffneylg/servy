@@ -2,7 +2,6 @@ defmodule Servy.Handler do
 
   alias Servy.BearController
   alias Servy.Conv
-  alias Servy.Fetcher
   alias Servy.FileHandler
   alias Servy.VideoCam
   import Servy.Api.BearController
@@ -34,13 +33,14 @@ defmodule Servy.Handler do
   end
 
   def route(%Conv{method: "GET", path: "/sensors"} = conv) do
-    bigfoot_pid = Fetcher.async(fn -> Servy.Tracker.get_location("bigfoot") end)
+    task = Task.async(fn -> Servy.Tracker.get_location("bigfoot") end)
+
     snaps =
       ["cam-1", "cam-2", "cam-3"]
-      |> Enum.map(&Fetcher.async(fn -> VideoCam.get_snapshot(&1) end))
-      |> Enum.map(&Fetcher.recv/1)
+      |> Enum.map(&Task.async(fn -> VideoCam.get_snapshot(&1) end))
+      |> Enum.map(&Task.await/1)
 
-    bigfoot = Fetcher.recv(bigfoot_pid)
+    bigfoot = Task.await(task)
 
     %{ conv | status: 200, resp_body: inspect {snaps, bigfoot} }
   end
