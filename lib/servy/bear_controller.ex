@@ -7,7 +7,6 @@ defmodule Servy.BearController do
   import Servy.View, only: [render: 3]
 
   @pages_path Path.expand("pages", File.cwd!)
-  @templates_path Path.expand("templates", File.cwd!)
 
   def index(conv) do
     bears =
