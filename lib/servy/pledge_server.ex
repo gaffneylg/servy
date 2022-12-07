@@ -1,6 +1,26 @@
 defmodule Servy.PledgeServer do
 
 
+  def listen_loop(state) do
+    IO.inspect "Waiting on a message"
+
+    receive do
+      {:create_pledge, name, amount} ->
+        # TODO: implement proper state here
+        # cache = state.cache
+        new_state = [ {name, amount} | state]
+        {:ok, id} = send_pledge_to_service(name, amount)
+        IO.inspect("#{name} pledged #{amount}.")
+        listen_loop(new_state)
+      {sender, :recent_pledges} ->
+        # pledges = recent_pledges()
+        send sender, {:response, state}
+        IO.inspect(sender, label: "sender")
+        listen_loop(state)
+    end
+
+  end
+
   def create_pledge(name, amount) do
     case send_pledge_to_service(name, amount) do
       {:ok, id} ->
