@@ -16,7 +16,7 @@ defmodule PledgeServerTest do
 
     expected_cache_total = 150
 
-    returned_cache_total = recent_pledges |> Enum.map(&elem(&1, 1)) |> Enum.sum
+    returned_cache_total = PledgeServer.total_pledged()
 
     assert expected_cache_total == returned_cache_total
 
