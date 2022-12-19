@@ -1,39 +1,52 @@
 defmodule Servy.SensorServer do
 
   @name :sensor_server
-  @refresh_interval 5000
 
   alias Servy.VideoCam
 
   use GenServer
 
+  defmodule State do
+    defstruct sensor_data: %{},
+              refresh_interval: :timer.seconds(5)
+  end
+
   # Client interface
 
   def start do
-    GenServer.start(__MODULE__, %{}, name: @name)
+    GenServer.start(__MODULE__, %State{}, name: @name)
   end
 
   def get_sensor_data do
     GenServer.call(@name, :get_sensor_data)
   end
 
+  def set_refresh_interval(new_interval_ms) do
+    GenServer.cast(@name, {:refresh_interval, new_interval_ms})
+  end
+
   # Server callbacks
 
-  def init(_state) do
-    initial_state = run_tasks_to_get_sensor_data()
-    schedule_refresh(@refresh_interval)
-    {:ok, initial_state}
+  def init(state) do
+    sensor_info = run_tasks_to_get_sensor_data()
+    schedule_refresh(state.refresh_interval)
+    {:ok, %State{state | sensor_data: sensor_info}}
   end
 
   def handle_call(:get_sensor_data, _from, state) do
-    {:reply, state, state}
+    {:reply, state.sensor_data, state}
   end
 
-  def handle_info(:refresh, _state) do
+  def handle_cast({:refresh_interval, new_interval}, state) do
+    new_state = %State{state | refresh_interval: new_interval}
+    {:noreply, new_state}
+  end
+
+  def handle_info(:refresh, state) do
     IO.inspect("Gonna refresh the state now.")
     new_state = run_tasks_to_get_sensor_data()
-    schedule_refresh(@refresh_interval)
-    {:noreply, new_state}
+    schedule_refresh(state.refresh_interval)
+    {:noreply, %State{state | sensor_data: new_state}}
   end
 
   def handle_info(message, state) do
