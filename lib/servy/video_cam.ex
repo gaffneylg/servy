@@ -10,7 +10,7 @@ defmodule Servy.VideoCam do
     # Example API call to fetch fake user's info.
     case UserApi.query("2") do
       {:ok, city} ->
-        IO.inspect(city, label: "User is from")
+        # IO.inspect(city, label: "User is from")
         city
       {:error, error} ->
         "Whoops! #{error}"
@@ -19,6 +19,6 @@ defmodule Servy.VideoCam do
     # sample slow query
     :timer.sleep(500)
 
-    "#{camera_name}-snapshot.jpg"
+    "#{camera_name}-snapshot-#{:rand.uniform(1000)}.jpg"
   end
 end

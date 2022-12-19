@@ -30,7 +30,6 @@ defmodule Servy.PledgeServer do
   end
 
   def set_cache_size(value) do
-    new_state = %State{cache_size: value}
     GenServer.cast @process_name, {:set_cache_size, value}
   end
 
@@ -66,7 +65,7 @@ defmodule Servy.PledgeServer do
   end
 
   def handle_info(message, state) do
-    IO.inspect("Can't print this.")
+    IO.inspect(message, label: "Can't handle this")
     {:noreply, state}
   end
 
@@ -82,23 +81,23 @@ defmodule Servy.PledgeServer do
 end
 
 
-alias Servy.PledgeServer
+# alias Servy.PledgeServer
 
-{:ok, pid} = PledgeServer.start
+# {:ok, pid} = PledgeServer.start
 
-send pid, {:stop, "hammertime"}
+# send pid, {:stop, "hammertime"}
 
-PledgeServer.set_cache_size(4)
+# PledgeServer.set_cache_size(4)
 
-IO.inspect PledgeServer.create_pledge("homer", 10)
+# IO.inspect PledgeServer.create_pledge("homer", 10)
 # PledgeServer.clear
 # IO.inspect PledgeServer.create_pledge("moe", 20)
 # IO.inspect PledgeServer.create_pledge("lenny", 30)
 # IO.inspect PledgeServer.create_pledge("carl", 40)
 # IO.inspect PledgeServer.create_pledge("barney", 50)
 
-IO.inspect PledgeServer.recent_pledges()
+# IO.inspect PledgeServer.recent_pledges()
 
-IO.inspect PledgeServer.total_pledged()
+# IO.inspect PledgeServer.total_pledged()
 
 # IO.inspect Process.info(pid, :messages)

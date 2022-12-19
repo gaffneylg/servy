@@ -3,7 +3,7 @@ defmodule Servy.Handler do
   alias Servy.BearController
   alias Servy.Conv
   alias Servy.FileHandler
-  alias Servy.VideoCam
+  alias Servy.SensorServer
   import Servy.Api.BearController
   import Servy.Parser
   import Servy.Plugins, only: :functions
@@ -42,17 +42,9 @@ defmodule Servy.Handler do
   end
 
   def route(%Conv{method: "GET", path: "/sensors"} = conv) do
-    task = Task.async(fn -> Servy.Tracker.get_location("bigfoot") end)
+    %{snapshots: snaps, bigfoot: bigfoot_location} = SensorServer.get_sensor_data()
 
-    snaps =
-      ["cam-1", "cam-2", "cam-3"]
-      |> Enum.map(&Task.async(fn -> VideoCam.get_snapshot(&1) end))
-      |> Enum.map(&Task.await/1)
-
-    bigfoot = Task.await(task)
-    bigfoot_location = "Lat: " <> bigfoot.lat <> ", Lng: " <> bigfoot.lng <> "."
-
-    render(conv, "sensors.html.heex", [snapshots: snaps, bigfoot: bigfoot_location ] )
+    render(conv, "sensors.html.heex", [snapshots: snaps, bigfoot: bigfoot_location] )
   end
 
   def route(%Conv{method: "GET", path: "/hibernate/" <> time} = conv) do
