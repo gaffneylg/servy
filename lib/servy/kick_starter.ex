@@ -3,20 +3,39 @@ defmodule Servy.KickStarter do
 
   @name :kickstarter
 
+  defmodule State do
+    defstruct http_server: nil
+  end
+
+  # client functions
+
   def start do
     IO.inspect("Starting the kick starter")
-    GenServer.start(__MODULE__, :ok, name: __MODULE__)
+    GenServer.start(__MODULE__, %State{}, name: @name)
   end
 
-  def init(:ok) do
+  def get_server() do
+    GenServer.call(@name, :get_server_info)
+  end
+
+  # GenServer functions
+
+  def init(state) do
     Process.flag(:trap_exit, true)
-    {:ok, start_server()}
+    http_server = start_server()
+    state = %{state | http_server: http_server}
+    {:ok, state}
   end
 
+  def handle_call(:get_server_info, _from, state) do
+    {:reply, state.http_server, state}
+  end
 
   def handle_info({:EXIT, _pid_killed, message}, _state) do
     IO.inspect(message, label: "Process exited with reason")
-    {:noreply, start_server()}
+    http_server = start_server()
+    new_state = %State{http_server: http_server}
+    {:noreply, new_state}
   end
 
   defp start_server() do
