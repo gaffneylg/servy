@@ -1,12 +1,11 @@
 defmodule Servy do
+  use Application
   @moduledoc """
   Initial very VERY basic start for servy project.
   """
 
-  def hello(name) do
-    "Hello, #{name}!"
-    :world
+  def start(_type, _args) do
+    IO.puts("Starting the application.")
+    Servy.Supervisor.start_link()
   end
 end
-
-IO.puts(Servy.hello("Mike"))
