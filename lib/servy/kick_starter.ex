@@ -9,9 +9,9 @@ defmodule Servy.KickStarter do
 
   # client functions
 
-  def start do
+  def start_link(_param) do
     IO.inspect("Starting the kick starter")
-    GenServer.start(__MODULE__, %State{}, name: @name)
+    GenServer.start_link(__MODULE__, %State{}, name: @name)
   end
 
   def get_server() do
